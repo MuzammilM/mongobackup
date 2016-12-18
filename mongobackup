@@ -1,0 +1,36 @@
+#Script acts as an interface for incremental and complete backup strategy
+if [ $# -lt 1 ]
+then
+        echo "Possible options : 'incremental' 'complete' "
+        exit
+fi
+	
+	case "$1" in
+incremental)
+
+	if [ $# -lt 2 ]
+		then
+        	echo "Specify date"
+                echo "Available dates : "
+                echo `s3cmd ls s3://mparchive/dailyDump/ | sed 's/\///g;s/DIR//g;s/s3://g;s/mparchivedailyDump//g'`
+        	exit
+	else
+	incrementalRestore $2
+	fi
+;;
+complete)
+
+ 
+        if [ $# -lt 2 ]
+                then
+                echo "Options 'latest' 'date'"
+		echo "If date , specify in YYYYMMDD format"
+		echo "Available dates : "
+		echo `s3cmd ls s3://mparchive/weeklyDump/ | sed 's/\///g;s/DIR//g;s/s3://g;s/mparchiveweeklyDump//g'`
+                exit
+        else
+        completeRestore $2
+        fi
+;;
+
+esac
